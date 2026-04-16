@@ -2,30 +2,24 @@ const express = require("express");
 const path = require("path");
 
 const app = express();
+
+// 🔥 WICHTIG für Render!
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(express.json());
+// Statische Dateien (index.html)
 app.use(express.static(path.join(__dirname, "public")));
 
-// Fake Login Daten
-const USER = {
-  username: "admin",
-  password: "1234"
-};
-
-// Login Route
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-
-  if (username === USER.username && password === USER.password) {
-    res.json({ success: true });
-  } else {
-    res.json({ success: false });
-  }
+// TEST ROUTE (wichtig zum Debuggen)
+app.get("/test", (req, res) => {
+  res.send("Server läuft richtig ✅");
 });
 
-// Start Server
+// Fallback (verhindert Lade-Loop!)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// Server starten
 app.listen(PORT, () => {
   console.log("Server läuft auf Port " + PORT);
 });
